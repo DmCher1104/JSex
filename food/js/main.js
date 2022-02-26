@@ -152,12 +152,13 @@ document.addEventListener('DOMContentLoaded', function () {
     //Classes to the cards
     class MenuCard {
 
-        constructor(src, alt, title, description, price, parentSelector) {
+        constructor(src, alt, title, description, price, parentSelector, ...classes) {
             this.src = src;
             this.alt = alt;
             this.title = title;
             this.description = description;
             this.parent = document.querySelector(parentSelector);
+            this.classes = classes;
             this.price = price;
             this.transfer = 2.645 //на 22.02.22
             this.changeToBYN();
@@ -169,8 +170,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
         render() {
             const element = document.createElement('div');
+
+            if (this.classes.length === 0) {
+                this.classes = 'menu__item';
+                element.classList.add(this.classes);
+            } else {
+                this.classes.forEach(function (className) {
+                    element.classList.add(className);
+                });
+            }
+
             element.innerHTML = `
-             <div class="menu__item">
                     <img src=${this.src} alt=${this.alt}>
                     <h3 class="menu__item-subtitle">${this.title}</h3>
                     <div class="menu__item-descr">${this.description}</div>
@@ -179,7 +189,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         <div class="menu__item-cost">Цена:</div>
                         <div class="menu__item-total"><span>${this.price}</span> грн/день</div>
                     </div>
-                </div>
             `;
 
             this.parent.append(element);
@@ -194,7 +203,9 @@ document.addEventListener('DOMContentLoaded', function () {
         'овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой\n' +
         'и высоким качеством!',
         14,
-        '.menu .container'
+        '.menu .container',
+        'menu__item',
+        'justForCheck'
     ).render();
 
     new MenuCard(
@@ -204,7 +215,7 @@ document.addEventListener('DOMContentLoaded', function () {
         'В меню “Премиум” мы используем не только красивый дизайн упаковки, \n' +
         ' но и  качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в  ресторан!',
         200,
-        '.menu .container'
+        '.menu .container',
     ).render();
 
     new MenuCard(
@@ -215,6 +226,7 @@ document.addEventListener('DOMContentLoaded', function () {
         'продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество \n' +
         'белков за счет тофу и импортных вегетарианских стейков.',
         140,
-        '.menu .container'
+        '.menu .container',
+        'menu__item'
     ).render();
 });
