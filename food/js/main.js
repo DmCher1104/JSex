@@ -229,4 +229,66 @@ document.addEventListener('DOMContentLoaded', function () {
         '.menu .container',
         'menu__item'
     ).render();
+
+    //Forms
+    let forms = document.querySelectorAll('form');
+
+    const message = {
+        loading: 'Идет загрузка...',
+        success: 'Мы скоро с вами свяжемся',
+        failure: 'Что-то пошло не так'
+    }
+
+    forms.forEach(function (form) {
+        postData(form);
+    });
+
+    function postData(form) {
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const statusMessage = document.createElement('div');
+            statusMessage.classList.add('status');
+            statusMessage.textContent = message.loading;
+            form.append(statusMessage);
+
+            const req = new XMLHttpRequest();
+            req.open('POST', 'server.php');
+
+            //устан-ся автоматически (FormData c XMLHttpRequest)
+            // req.setRequestHeader('Content-type', 'multipart/form-data');
+            // const formData = new FormData(form);
+            // req.send(formData);
+
+            //через json
+            req.setRequestHeader('Content-type', 'application/json');
+            const formData = new FormData(form);
+
+            const  obj = {};
+
+            formData.forEach(function (value,key){
+               obj[key] = value;
+            });
+
+            const json = JSON.stringify(obj);
+            req.send(json);
+
+
+            req.addEventListener('load', function () {
+                if (req.status === 200) {
+                    console.log(req.response);
+                    statusMessage.textContent = message.success;
+                    form.reset();
+                    setTimeout(function (){
+                        statusMessage.remove();
+                    },4000);
+
+                } else {
+                    statusMessage.textContent = message.failure;
+                }
+
+            });
+
+        });
+    }
 });
