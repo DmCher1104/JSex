@@ -253,8 +253,8 @@ document.addEventListener('DOMContentLoaded', function () {
             `;
             form.insertAdjacentElement('afterend', statusMessage);
 
-            const req = new XMLHttpRequest();
-            req.open('POST', 'server.php');
+            // const req = new XMLHttpRequest();
+            // req.open('POST', 'server.php');
 
             //устан-ся автоматически (FormData c XMLHttpRequest)
             // req.setRequestHeader('Content-type', 'multipart/form-data');
@@ -262,7 +262,8 @@ document.addEventListener('DOMContentLoaded', function () {
             // req.send(formData);
 
             //через json
-            req.setRequestHeader('Content-type', 'application/json');
+            // req.setRequestHeader('Content-type', 'application/json');
+
             const formData = new FormData(form);
 
             const obj = {};
@@ -272,21 +273,40 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             const json = JSON.stringify(obj);
-            req.send(json);
 
+            // req.send(json);
 
-            req.addEventListener('load', function () {
-                if (req.status === 200) {
-                    console.log(req.response);
-                    showThanksModal(message.success);
-                    form.reset();
-                    statusMessage.remove();
-                } else {
-                    showThanksModal(message.failure);
-                }
+            // req.addEventListener('load', function () {
+            //     if (req.status === 200) {
+            //         console.log(req.response);
+            //         showThanksModal(message.success);
+            //         form.reset();
+            //         statusMessage.remove();
+            //     } else {
+            //         showThanksModal(message.failure);
+            //     }
+            //
+            // });
 
+            //исп-ие Fetch вместо XMLHttpRequest
+            fetch('server.php', {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: json
+            }).then(function (data) {
+                return data.text();
+            }).then(function (data) {
+                console.log(data);
+                showThanksModal(message.success);
+                form.reset();
+                statusMessage.remove();
+            }).catch(function () {
+                showThanksModal(message.failure);
+            }).finally(function () {
+                form.reset();
             });
-
         });
     }
 
