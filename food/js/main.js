@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     //Timer
-    let endTime = '2022-03-08';
+    let endTime = '2022-03-31';
 
     function getTimeRemaning(endTime) {
         let t = Date.parse(endTime) - Date.parse(new Date()),
@@ -193,22 +193,22 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    const getData = async function (url) {
-        const res = await fetch(url);
-
-        if (!res.ok){
-            throw new Error(`Could not fetch ${url}, status: ${res.status}`);
-        }
-
-        return await res.json();
-    }
-
     //через библиотеку axios
-    axios.get('http://localhost:3000/menu').then(data=>{
+    axios.get('http://localhost:3000/menu').then(data => {
         data.data.forEach(({img, altimg, title, descr, price}) => {
             new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
         });
     });
+
+    /* const getData = async function (url) {
+        const res = await fetch(url);
+
+        if (!res.ok){
+           throw new Error(`Could not fetch ${url}, status: ${res.status}`);
+        }
+
+        return await res.json();
+    }*/
 
     /*getData('http://localhost:3000/menu').then(function (data){
         data.forEach(({img, altimg, title, descr, price}) => {
@@ -250,6 +250,7 @@ document.addEventListener('DOMContentLoaded', function () {
         '.menu .container',
         'menu__item'
     ).render();*/
+
 
     //Forms
     let forms = document.querySelectorAll('form');
@@ -361,4 +362,51 @@ document.addEventListener('DOMContentLoaded', function () {
             closeModal();
         }, 4000);
     }
+
+    //Slider
+    const slides = document.querySelectorAll('.offer__slide'),
+        prev = document.querySelector('.offer__slider-prev'),
+        next = document.querySelector('.offer__slider-next'),
+        total = document.querySelector('#total'),
+        current = document.querySelector('#current');
+
+    let indexSlide = 1;
+
+    showSlides(indexSlide);
+
+    if (slides.length < 10){
+        total.textContent = `0${slides.length}`;
+    }else{
+        total.textContent = indexSlide;
+    }
+
+    function showSlides(n) {
+        if (n > slides.length)
+            indexSlide = 1;
+        if (n < 1)
+            indexSlide = slides.length;
+
+        slides.forEach(function (item) {
+            item.style.display = 'none';
+        });
+
+        slides[indexSlide - 1].style.display = 'block';
+
+        if (slides.length < 10){
+            current.textContent = `0${indexSlide}`;
+        }else{
+            current.textContent = indexSlide;
+        }
+    }
+
+    function plusSlides(n) {
+        showSlides(indexSlide += n);
+    }
+
+    prev.addEventListener('click', ()=>{
+        plusSlides(-1);
+    });
+    next.addEventListener('click',()=>{
+        plusSlides(1);
+    });
 });
