@@ -193,7 +193,23 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    new MenuCard(
+    const getData = async function (url) {
+        const res = await fetch(url);
+
+        if (!res.ok){
+           throw new Error(`Could not fetch ${url}, status: ${res.status}`);
+        }
+
+        return await res.json();
+    }
+
+    getData('http://localhost:3000/menu').then(function (data){
+        data.forEach(({img, altimg, title, descr, price}) => {
+            new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
+        });
+    });
+
+   /* new MenuCard(
         'img/tabs/vegy.jpg',
         'vegy',
         'Меню "Фитнес"',
@@ -226,7 +242,7 @@ document.addEventListener('DOMContentLoaded', function () {
         140,
         '.menu .container',
         'menu__item'
-    ).render();
+    ).render();*/
 
     //Forms
     let forms = document.querySelectorAll('form');
@@ -238,10 +254,22 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     forms.forEach(function (form) {
-        postData(form);
+        bindPostData(form);
     });
 
-    function postData(form) {
+    const postData = async function (url, data) {
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: data
+        });
+
+        return await res.json();
+    }
+
+    function bindPostData(form) {
         form.addEventListener('submit', function (event) {
             event.preventDefault();
 
@@ -266,38 +294,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const formData = new FormData(form);
 
-            const obj = {};
+            //1 перевод из formData в json
+            const json = JSON.stringify(Object.fromEntries(formData.entries()));
 
+            //2 перевод из formData в json
+            /*const obj = {};
             formData.forEach(function (value, key) {
                 obj[key] = value;
-            });
-
-            const json = JSON.stringify(obj);
+            });*/
 
             // req.send(json);
 
-            // req.addEventListener('load', function () {
-            //     if (req.status === 200) {
-            //         console.log(req.response);
-            //         showThanksModal(message.success);
-            //         form.reset();
-            //         statusMessage.remove();
-            //     } else {
-            //         showThanksModal(message.failure);
-            //     }
-            //
-            // });
+            /*req.addEventListener('load', function () {
+                if (req.status === 200) {
+                    console.log(req.response);
+                    showThanksModal(message.success);
+                    form.reset();
+                    statusMessage.remove();
+                } else {
+                    showThanksModal(message.failure);
+                }
+
+            });*/
 
             //исп-ие Fetch вместо XMLHttpRequest
-            fetch('server.php', {
-                method: 'POST',
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                body: json
-            }).then(function (data) {
-                return data.text();
-            }).then(function (data) {
+            postData('http://localhost:3000/requests', json).then(function (data) {
                 console.log(data);
                 showThanksModal(message.success);
                 form.reset();
@@ -334,8 +355,4 @@ document.addEventListener('DOMContentLoaded', function () {
             closeModal();
         }, 4000);
     }
-
-    fetch('http://localhost:3000/menu')
-        .then(data => data.json())
-        .then(res=>console.log(res));
 });
