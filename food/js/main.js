@@ -197,19 +197,26 @@ document.addEventListener('DOMContentLoaded', function () {
         const res = await fetch(url);
 
         if (!res.ok){
-           throw new Error(`Could not fetch ${url}, status: ${res.status}`);
+            throw new Error(`Could not fetch ${url}, status: ${res.status}`);
         }
 
         return await res.json();
     }
 
-    getData('http://localhost:3000/menu').then(function (data){
-        data.forEach(({img, altimg, title, descr, price}) => {
+    //через библиотеку axios
+    axios.get('http://localhost:3000/menu').then(data=>{
+        data.data.forEach(({img, altimg, title, descr, price}) => {
             new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
         });
     });
 
-   /* new MenuCard(
+    /*getData('http://localhost:3000/menu').then(function (data){
+        data.forEach(({img, altimg, title, descr, price}) => {
+            new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
+        });
+    });*/
+
+    /* new MenuCard(
         'img/tabs/vegy.jpg',
         'vegy',
         'Меню "Фитнес"',
@@ -307,7 +314,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             /*req.addEventListener('load', function () {
                 if (req.status === 200) {
-                    console.log(req.response);
+
                     showThanksModal(message.success);
                     form.reset();
                     statusMessage.remove();
@@ -319,7 +326,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             //исп-ие Fetch вместо XMLHttpRequest
             postData('http://localhost:3000/requests', json).then(function (data) {
-                console.log(data);
                 showThanksModal(message.success);
                 form.reset();
                 statusMessage.remove();
