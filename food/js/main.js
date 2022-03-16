@@ -367,6 +367,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     const slides = document.querySelectorAll('.offer__slide'),
+        slider = document.querySelector('.offer__slider'),
         prev = document.querySelector('.offer__slider-prev'),
         next = document.querySelector('.offer__slider-next'),
         total = document.querySelector('#total'),
@@ -396,6 +397,25 @@ document.addEventListener('DOMContentLoaded', function () {
         slide.style.width = width;
     });
 
+    slider.style.position = 'relative';
+    const dots = document.createElement('ol'),
+        arrDots = [];
+    dots.classList.add('carousel-indicators');
+    slider.append(dots);
+
+    for (let i = 0; i < slides.length; i++) {
+        const dot = document.createElement('li');
+        dot.setAttribute('data-slide-to', i + 1);
+        dot.classList.add('dot');
+
+        if (i === 0) {
+            dot.style.opacity = '1';
+        }
+
+        dots.append(dot);
+        arrDots.push(dot);
+    }
+
     next.addEventListener('click', () => {
         if (offset == (+width.slice(0, width.length - 2) * (slides.length - 1))) {
             offset = 0;
@@ -416,6 +436,11 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             current.textContent = indexSlide;
         }
+
+        arrDots.forEach(dot => {
+            dot.style.opacity = '0.5';
+        });
+        arrDots[indexSlide - 1].style.opacity = '1';
     });
 
     prev.addEventListener('click', () => {
@@ -438,6 +463,32 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             current.textContent = indexSlide;
         }
+
+        arrDots.forEach(dot => {
+            dot.style.opacity = '0.5';
+        });
+        arrDots[indexSlide - 1].style.opacity = '1';
+    });
+
+    arrDots.forEach(dot => {
+        dot.addEventListener('click', (event) => {
+            const slideTo = event.target.getAttribute('data-slide-to');
+
+            indexSlide = slideTo;
+            offset = +width.slice(0, width.length - 2) * (slideTo - 1);
+            slidesInner.style.transform = `translateX(-${offset}px)`;
+
+            if (slides.length < 10) {
+                current.textContent = `0${indexSlide}`;
+            } else {
+                current.textContent = indexSlide;
+            }
+
+            arrDots.forEach(dot => {
+                dot.style.opacity = '0.5';
+            });
+            arrDots[indexSlide - 1].style.opacity = '1';
+        });
     });
 
     /*showSlides(indexSlide);
