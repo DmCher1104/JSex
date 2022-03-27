@@ -1,6 +1,5 @@
-function timer(){
-    //Timer
-    let endTime = '2022-03-31';
+//Timer
+function timer(idSelector, endTime){
 
     function getTimeRemaning(endTime) {
         let t = Date.parse(endTime) - Date.parse(new Date()),
@@ -51,7 +50,7 @@ function timer(){
         }
     }
 
-    setClock('.timer', endTime);
+    setClock(idSelector, endTime);
 }
 
-module.exports = timer;
+export default timer;
