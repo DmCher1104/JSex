@@ -36,7 +36,7 @@ function slider({container, slide, nextArrow, prevArrow, totalCounter, currentCo
     const dots = document.createElement('ol'),
         arrDots = [];
     dots.classList.add('carousel-indicators');
-    slider.append(dots);
+    slider.insertAdjacentElement('beforeend', dots);
 
     for (let i = 0; i < slides.length; i++) {
         const dot = document.createElement('li');
@@ -47,7 +47,7 @@ function slider({container, slide, nextArrow, prevArrow, totalCounter, currentCo
             dot.style.opacity = '1';
         }
 
-        dots.append(dot);
+        dots.insertAdjacentElement('beforeend', dot);
         arrDots.push(dot);
     }
 

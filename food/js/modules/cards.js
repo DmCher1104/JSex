@@ -44,7 +44,8 @@ function cards() {
                     </div>
             `;
 
-            this.parent.append(element);
+            // this.parent.append(element);
+            this.parent.insertAdjacentElement('beforeend',element);
         }
     }
 
